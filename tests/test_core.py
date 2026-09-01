@@ -36,7 +36,9 @@ def test_missing(field):
     assert f"missing:{field}" in decide(r).reasons
 
 
-@pytest.mark.parametrize("value", [None, "low", {}, []])
+@pytest.mark.parametrize(
+    "value", [None, "low", {}, [], True, False, float("nan"), float("inf"), float("-inf"), -0.01]
+)
 def test_invalid_income(value):
     r = valid()
     r["income_ratio"] = value
@@ -44,8 +46,14 @@ def test_invalid_income(value):
 
 
 def test_version_preserved():
-    assert decide(valid(), "2027.4").policy_version == "2027.4"
+    result = decide(valid(), "2027.4")
+    assert result.policy_version == "2027.4" and result.status == "manual_review"
+    assert result.reasons == ("unknown policy version",)
 
 
-def test_evidence_listed():
-    assert decide(valid()).evidence == ("resident", "income_ratio", "documents_complete")
+def test_evidence_lists_versioned_rule_sources():
+    assert decide(valid()).evidence == (
+        "RULE-RESIDENCY-01@PUBLIC-DEMO-POLICY",
+        "RULE-INCOME-01@PUBLIC-DEMO-POLICY",
+        "RULE-DOCUMENTS-01@PUBLIC-DEMO-POLICY",
+    )

@@ -11,7 +11,7 @@ Policy-assisted decisions must show the rule version, evidence, and unresolved f
 
 ## The proof
 
-Versioned rules, evidence extraction, deterministic decisions, citations, and manual-review states.
+An allowlisted synthetic policy version, immutable demo rule/source IDs, strict evidence validation, deterministic decisions, and manual review for missing, malformed, or unknown-version inputs.
 
 ## Why this is forward deployed
 
@@ -38,7 +38,7 @@ flowchart LR
 ```bash
 python3.12 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e '.[dev]'
+python -m pip install -c constraints.txt -e '.[dev]'
 pytest -q
 policytrace
 ```
